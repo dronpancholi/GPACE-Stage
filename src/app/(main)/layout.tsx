@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Home, Compass, Trophy, LogOut, Settings, User as UserIcon, AlertTriangle } from "lucide-react";
+import { Home, Compass, Trophy, LogOut, Settings, User as UserIcon, AlertTriangle, ShieldCheck } from "lucide-react";
 import { signOut } from "@/app/actions/auth";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +22,7 @@ export default async function MainLayout({
 
     // Fetch navigation data safely
     const { data: subgroups } = await supabase.from("subgroups").select("id, name, slug").order('name');
-    const { data: profile } = await supabase.from("users").select("display_name, reputation, is_banned, ban_reason").eq('id', user.id).maybeSingle();
+    const { data: profile } = await supabase.from("users").select("display_name, reputation, is_banned, ban_reason, role").eq('id', user.id).maybeSingle();
 
     if (profile?.is_banned) {
       return (
@@ -43,6 +43,8 @@ export default async function MainLayout({
     }
     const { data: topScholars } = await supabase.from("users").select("id, display_name, reputation").order("reputation", { ascending: false }).limit(5);
 
+    const isPrivileged = profile?.role === 'admin' || profile?.role === 'moderator';
+
     return (
       <div className="flex min-h-screen bg-background">
         <aside className="w-64 fixed inset-y-0 left-0 border-r-2 border-black bg-surface flex flex-col hidden md:flex">
@@ -57,6 +59,11 @@ export default async function MainLayout({
               <Link href="/" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black hover:bg-surface-hover transition-colors"><Home className="w-5 h-5" /> HOME</Link>
               <Link href="/explore" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black hover:bg-surface-hover transition-colors"><Compass className="w-5 h-5" /> EXPLORE</Link>
               <Link href="/leaderboard" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black hover:bg-surface-hover transition-colors"><Trophy className="w-5 h-5" /> LEADERBOARD</Link>
+              {isPrivileged && (
+                <Link href="/admin" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black bg-black text-white hover:bg-gray-900 transition-colors">
+                  <ShieldCheck className="w-5 h-5" /> COMMAND
+                </Link>
+              )}
             </div>
             <div className="p-6">
               <div className="flex justify-between items-center mb-4 border-b-2 border-black pb-2">
