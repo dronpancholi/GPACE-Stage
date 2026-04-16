@@ -10,13 +10,23 @@ export async function login(formData: FormData) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-  if (error) {
-    return redirect(`/login?message=${encodeURIComponent(error.message)}`);
+    if (error) {
+      return redirect(`/login?message=${encodeURIComponent(error.message)}`);
+    }
+  } catch (err: any) {
+    console.error("DIAGNOSTIC: Login Fetch Failure:", err);
+    if (err?.message?.includes('fetch failed')) {
+      return redirect("/login?message=Fetch Failed: The server cannot reach Supabase. Please check your internet connection or Supabase URL.");
+    }
+    // If it's a redirect, we must re-throw it
+    if (err?.digest?.startsWith('NEXT_REDIRECT')) throw err;
+    return redirect(`/login?message=${encodeURIComponent(err.message || 'Unknown Error')}`);
   }
 
   revalidatePath("/", "layout");
