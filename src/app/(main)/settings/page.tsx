@@ -1,7 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
-import { updateProfile } from "@/app/actions/settings";
-import { redirect } from "next/navigation";
-import { Settings as SettingsIcon, AlertCircle, CheckCircle2 } from "lucide-react";
+import { FormSubmitButton } from "@/components/FormSubmitButton";
 
 export default async function SettingsPage({
   searchParams,
@@ -127,7 +124,7 @@ export default async function SettingsPage({
         {/* Save Bar */}
         <div className="sticky bottom-4 z-10 card p-4 bg-white border-2 border-black shadow-[4px_4px_0_0_#000] flex justify-between items-center">
            <span className="text-xs font-bold font-sans uppercase text-text-muted tracking-widest hidden sm:inline">Unsaved changes will be lost</span>
-           <button type="submit" className="btn-primary px-10">SAVE CHANGES</button>
+           <FormSubmitButton type="submit" className="btn-primary px-10" pendingText="SAVING...">SAVE CHANGES</FormSubmitButton>
         </div>
       </form>
     </div>

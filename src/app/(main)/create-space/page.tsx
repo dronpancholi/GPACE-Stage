@@ -1,6 +1,4 @@
-import { createSubgroup } from "@/app/actions/subgroups";
-import Link from "next/link";
-import { ArrowLeft, AlertCircle, Compass } from "lucide-react";
+import { FormSubmitButton } from "@/components/FormSubmitButton";
 
 export default async function CreateSpacePage({
   searchParams,
@@ -98,9 +96,9 @@ export default async function CreateSpacePage({
         </div>
 
         <div className="pt-6 border-t-2 border-black flex justify-end">
-          <button type="submit" className="btn-primary px-10 text-lg uppercase tracking-widest">
+          <FormSubmitButton className="btn-primary px-10 text-lg uppercase tracking-widest" pendingText="FOUNDING...">
             FOUND SPACE
-          </button>
+          </FormSubmitButton>
         </div>
 
       </form>

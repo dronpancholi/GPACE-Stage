@@ -60,12 +60,12 @@ export default async function LoginPage({
           />
         </div>
 
-        <button formAction={login} className="btn-primary w-full">
+        <FormSubmitButton formAction={login} className="btn-primary w-full" pendingText="VERIFYING...">
           Sign In
-        </button>
-        <button formAction={signup} className="btn-secondary w-full">
+        </FormSubmitButton>
+        <FormSubmitButton formAction={signup} className="btn-secondary w-full" pendingText="CREATING...">
           Create Account
-        </button>
+        </FormSubmitButton>
       </form>
     </div>
   );

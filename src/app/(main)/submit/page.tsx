@@ -3,6 +3,8 @@ import { createPost } from "@/app/actions/posts";
 import Link from "next/link";
 import { ArrowLeft, AlertCircle } from "lucide-react";
 
+import { FormSubmitButton } from "@/components/FormSubmitButton";
+
 export default async function SubmitPage({
   searchParams,
 }: {
@@ -94,7 +96,9 @@ export default async function SubmitPage({
 
         <div className="flex justify-end gap-3 pt-2 border-t border-border">
           <Link href="/" className="btn-ghost">Cancel</Link>
-          <button type="submit" className="btn-primary px-8">Post</button>
+          <FormSubmitButton className="btn-primary px-8" pendingText="POSTING...">
+            POST
+          </FormSubmitButton>
         </div>
       </form>
     </div>

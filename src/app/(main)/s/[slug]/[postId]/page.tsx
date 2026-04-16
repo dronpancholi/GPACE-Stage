@@ -1,9 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, ArrowUp, ArrowDown, User } from "lucide-react";
-import { revalidatePath } from "next/cache";
-import { castVote } from "@/app/actions/votes";
+import { FormSubmitButton } from "@/components/FormSubmitButton";
 
 export default async function PostDetailPage({
   params,
@@ -108,7 +103,9 @@ export default async function PostDetailPage({
             required
           />
           <div className="flex justify-end">
-            <button type="submit" className="btn-primary">Comment</button>
+            <FormSubmitButton className="btn-primary" pendingText="POSTING COMMENT...">
+              Comment
+            </FormSubmitButton>
           </div>
         </form>
 
