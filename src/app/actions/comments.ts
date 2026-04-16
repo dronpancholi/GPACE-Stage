@@ -50,6 +50,4 @@ export async function createComment(formData: FormData) {
 
   revalidatePath(`/s/${slug}/${postId}`);
   revalidatePath("/notifications");
-  
-  return { success: true };
 }

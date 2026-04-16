@@ -91,7 +91,7 @@ export async function resolveReport(formData: FormData) {
 export async function submitReport(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "You must be logged in to report content." };
+  if (!user) throw new Error("You must be logged in to report content.");
 
   const postId = formData.get("post_id") as string;
   const commentId = formData.get("comment_id") as string;
@@ -105,7 +105,5 @@ export async function submitReport(formData: FormData) {
     status: 'open'
   }]);
 
-  if (error) return { error: error.message };
-
-  return { success: true };
+  if (error) throw new Error(error.message);
 }
