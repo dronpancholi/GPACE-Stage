@@ -22,7 +22,9 @@ export async function login(formData: FormData) {
   } catch (err: any) {
     console.error("DIAGNOSTIC: Login Fetch Failure:", err);
     if (err?.message?.includes('fetch failed')) {
-      return redirect("/login?message=Fetch Failed: The server cannot reach Supabase. Please check your internet connection or Supabase URL.");
+      const hasUrl = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const hasKey = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      return redirect(`/login?message=${encodeURIComponent(`Fetch Failed: The Vercel server cannot reach Supabase. Check Vercel Env Vars: URL(${hasUrl}), KEY(${hasKey})`)}`);
     }
     // If it's a redirect, we must re-throw it
     if (err?.digest?.startsWith('NEXT_REDIRECT')) throw err;
@@ -43,19 +45,31 @@ export async function signup(formData: FormData) {
   const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   // Sign up using Supabase Auth
-  const { data: authData, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        display_name: displayName,
+  let authData, authError;
+  try {
+    const res = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: displayName,
+        },
+        emailRedirectTo: `${SITE_URL}/api/auth/callback`,
       },
-      emailRedirectTo: `${SITE_URL}/api/auth/callback`,
-    },
-  });
+    });
+    authData = res.data;
+    authError = res.error;
+  } catch (err: any) {
+    if (err?.message?.includes('fetch failed')) {
+      const hasUrl = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const hasKey = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      return redirect(`/login?message=${encodeURIComponent(`Fetch Failed: The Vercel server cannot reach Supabase. Check Vercel Env Vars: URL(${hasUrl}), KEY(${hasKey})`)}`);
+    }
+    return redirect(`/login?message=${encodeURIComponent(err.message || 'Signup Fetch Crash')}`);
+  }
 
-  if (error) {
-    return redirect(`/login?message=${encodeURIComponent(error.message)}`);
+  if (authError) {
+    return redirect(`/login?message=${encodeURIComponent(authError.message)}`);
   }
 
   // Resilient profile creation:
