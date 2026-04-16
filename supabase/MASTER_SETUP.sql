@@ -156,6 +156,8 @@ CREATE POLICY "Users can update own posts" ON public.posts FOR UPDATE USING (aut
 
 DROP POLICY IF EXISTS "Votes viewable by everyone" ON public.votes;
 DROP POLICY IF EXISTS "Users can insert own votes" ON public.votes;
+DROP POLICY IF EXISTS "Users can update own votes" ON public.votes;
+DROP POLICY IF EXISTS "Users can delete own votes" ON public.votes;
 CREATE POLICY "Votes viewable by everyone" ON public.votes FOR SELECT USING (true);
 CREATE POLICY "Users can insert own votes" ON public.votes FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can update own votes" ON public.votes FOR UPDATE USING (auth.uid() = user_id);
