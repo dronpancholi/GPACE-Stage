@@ -1,3 +1,6 @@
+import { createSubgroup } from "@/app/actions/subgroups";
+import Link from "next/link";
+import { ArrowLeft, AlertCircle, Compass } from "lucide-react";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
 
 export default async function CreateSpacePage({
