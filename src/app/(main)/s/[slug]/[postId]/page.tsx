@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowUp, ArrowDown, User } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import { castVote } from "@/app/actions/votes";
+import { createComment } from "@/app/actions/comments";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
 
 export default async function PostDetailPage({
@@ -36,23 +37,6 @@ export default async function PostDetailPage({
     `)
     .eq("post_id", postId)
     .order("created_at", { ascending: true });
-
-  const addComment = async (formData: FormData) => {
-    "use server";
-    const supabaseServer = await createClient();
-    const { data: { user } } = await supabaseServer.auth.getUser();
-    if (!user) throw new Error("Not logged in");
-
-    const content = formData.get("content") as string;
-    
-    await supabaseServer.from("comments").insert([{
-      post_id: postId,
-      author_id: user.id,
-      content
-    }]);
-
-    revalidatePath(`/s/${slug}/${postId}`);
-  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
@@ -101,7 +85,9 @@ export default async function PostDetailPage({
       {/* Comments Section */}
       <div className="mb-8">
         <h3 className="font-bold text-lg mb-4 text-text">Comments</h3>
-        <form action={addComment} className="mb-8">
+        <form action={createComment} className="mb-8">
+          <input type="hidden" name="post_id" value={postId} />
+          <input type="hidden" name="slug" value={slug} />
           <textarea 
             name="content"
             placeholder="Add a comment..."
