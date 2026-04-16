@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS public.posts (
   status post_status DEFAULT 'pending'::post_status NOT NULL,
   rejection_reason TEXT,
   is_pinned BOOLEAN DEFAULT false,
+  is_anonymous BOOLEAN DEFAULT false,
   upvotes INTEGER DEFAULT 0 NOT NULL,
   downvotes INTEGER DEFAULT 0 NOT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL,
@@ -256,3 +257,21 @@ CREATE POLICY "Admins can view all reports" ON public.reports FOR SELECT USING (
 DROP POLICY IF EXISTS "Users can create reports" ON public.reports;
 CREATE POLICY "Users can create reports" ON public.reports FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
+  type TEXT NOT NULL, -- 'post_approved', 'post_rejected', 'comment_reply'
+  post_id UUID REFERENCES public.posts(id) ON DELETE SET NULL,
+  message TEXT NOT NULL,
+  read BOOLEAN DEFAULT false NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- Enable RLS for notifications
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view own notifications" ON public.notifications;
+CREATE POLICY "Users can view own notifications" ON public.notifications FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "System can insert notifications" ON public.notifications;
+CREATE POLICY "System can insert notifications" ON public.notifications FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Users can update own notifications" ON public.notifications;
+CREATE POLICY "Users can update own notifications" ON public.notifications FOR UPDATE USING (auth.uid() = user_id);

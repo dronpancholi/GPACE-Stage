@@ -33,6 +33,8 @@ export async function createPost(formData: FormData) {
     }
   }
 
+  const is_anonymous = formData.get("is_anonymous") === "true";
+
   const { data: subgroup } = await supabase
     .from("subgroups")
     .select("require_approval")
@@ -48,7 +50,8 @@ export async function createPost(formData: FormData) {
       title,
       content,
       type,
-      status
+      status,
+      is_anonymous
     }
   ]).select('id, subgroups(slug)').single();
 

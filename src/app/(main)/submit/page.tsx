@@ -12,9 +12,10 @@ export default async function SubmitPage({
 }) {
   const { error } = await searchParams;
   const supabase = await createClient();
-  const { data: subgroups } = await supabase.from("subgroups").select("id, name");
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data: profile } = await supabase.from("users").select("allow_anonymous").eq("id", user?.id).single();
 
-  return (
+    return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <Link href="/" className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text mb-6 transition-colors font-bold uppercase tracking-widest">
         <ArrowLeft className="w-4 h-4" /> Back to Feed
@@ -93,6 +94,13 @@ export default async function SubmitPage({
             required
           />
         </div>
+
+        {profile?.allow_anonymous && (
+          <div className="flex items-center gap-3 p-3 bg-gray-50 border border-black italic">
+            <input type="checkbox" name="is_anonymous" id="is_anonymous" value="true" className="w-4 h-4 accent-black" />
+            <label htmlFor="is_anonymous" className="text-xs font-bold uppercase tracking-widest text-text">Post Anonymously</label>
+          </div>
+        )}
 
         <div className="flex justify-end gap-3 pt-2 border-t border-border">
           <Link href="/" className="btn-ghost">Cancel</Link>
