@@ -1,13 +1,17 @@
-import { Flag, MessageSquare } from "lucide-react";
+import Link from "next/link";
+import { Flag, MessageSquare, ArrowUp, ArrowDown } from "lucide-react";
 import { castVote } from "@/app/actions/votes";
 import { submitReport } from "@/app/actions/admin";
 import { FormSubmitButton } from "./FormSubmitButton";
 
 export function PostCard({ post }: { post: any }) {
+  const handleReport = async (formData: FormData) => {
+    await submitReport(formData);
+  };
+
   return (
     <article className="card p-4 hover:shadow-md transition-shadow group flex gap-4 my-4">
       {/* Vote Sidebar */}
-      {/* ... previous code ... */}
       <div className="flex flex-col items-center gap-1 min-w-[2rem] pt-1">
         <form action={castVote}>
           <input type="hidden" name="target_id" value={post.id} />
@@ -64,7 +68,7 @@ export function PostCard({ post }: { post: any }) {
             <span>Comments</span>
           </Link>
 
-          <form action={submitReport} className="flex-1 flex items-center gap-2">
+          <form action={handleReport} className="flex-1 flex items-center gap-2">
              <input type="hidden" name="post_id" value={post.id} />
              <input type="hidden" name="reason" value="Community Flag" />
              <FormSubmitButton className="flex items-center gap-1.5 hover:text-red-600 px-2 py-1.5 rounded transition-colors" pendingText="...">
