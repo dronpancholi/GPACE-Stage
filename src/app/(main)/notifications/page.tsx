@@ -10,7 +10,7 @@ import {
   Trash2,
   Check
 } from "lucide-react";
-import { revalidatePath } from "next/cache";
+import { markAllNotificationsRead } from "@/app/actions/notifications";
 
 export const dynamic = "force-dynamic";
 
@@ -25,15 +25,6 @@ export default async function NotificationsPage() {
     .select(`*, posts ( title, subgroups ( slug ) )`)
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
-
-  const markAllRead = async () => {
-    "use server";
-    const supabaseServer = await createClient();
-    const { data: { user: u } } = await supabaseServer.auth.getUser();
-    if (!u) return;
-    await supabaseServer.from("notifications").update({ read: true }).eq("user_id", u.id).eq("read", false);
-    revalidatePath("/notifications");
-  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
