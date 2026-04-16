@@ -51,6 +51,8 @@ export async function moderatePost(formData: FormData) {
     }
   }
 
-  revalidatePath("/mod");
+  revalidatePath("/admin");
+  revalidatePath("/dashboard");
+  revalidatePath("/notifications");
   revalidatePath("/");
 }
