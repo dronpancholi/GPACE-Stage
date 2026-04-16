@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Home, Compass, Trophy, LogOut, Settings, User as UserIcon, AlertTriangle, ShieldCheck } from "lucide-react";
+import { Home, Compass, Trophy, LogOut, Settings, User as UserIcon, AlertTriangle, ShieldCheck, Bell, LayoutDashboard } from "lucide-react";
 import { signOut } from "@/app/actions/auth";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +43,12 @@ export default async function MainLayout({
     }
     const { data: topScholars } = await supabase.from("users").select("id, display_name, reputation").order("reputation", { ascending: false }).limit(5);
 
+    const { count: unreadCount } = await supabase
+      .from("notifications")
+      .select("*", { count: 'exact', head: true })
+      .eq("user_id", user.id)
+      .eq("read", false);
+
     const isPrivileged = profile?.role === 'admin' || profile?.role === 'moderator';
 
     return (
@@ -59,6 +65,15 @@ export default async function MainLayout({
               <Link href="/" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black hover:bg-surface-hover transition-colors"><Home className="w-5 h-5" /> HOME</Link>
               <Link href="/explore" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black hover:bg-surface-hover transition-colors"><Compass className="w-5 h-5" /> EXPLORE</Link>
               <Link href="/leaderboard" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black hover:bg-surface-hover transition-colors"><Trophy className="w-5 h-5" /> LEADERBOARD</Link>
+              <Link href="/dashboard" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black hover:bg-surface-hover transition-colors"><LayoutDashboard className="w-5 h-5" /> DASHBOARD</Link>
+              <Link href="/notifications" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black hover:bg-surface-hover transition-colors relative">
+                <Bell className="w-5 h-5" /> NOTIFICATIONS
+                {unreadCount ? (
+                  <span className="absolute top-4 right-6 bg-black text-white text-[8px] font-black px-1 rounded-full border border-white flex items-center justify-center animate-pulse">
+                    {unreadCount}
+                  </span>
+                ) : null}
+              </Link>
               {isPrivileged && (
                 <Link href="/admin" className="flex items-center gap-3 px-6 py-4 font-bold tracking-wide border-b-2 border-black bg-black text-white hover:bg-gray-900 transition-colors">
                   <ShieldCheck className="w-5 h-5" /> COMMAND

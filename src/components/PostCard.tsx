@@ -45,7 +45,11 @@ export function PostCard({ post }: { post: any }) {
             </Link>
           )}
           <span>•</span>
-          <span>Posted by {post.users?.display_name || 'Unknown'}</span>
+          {post.is_anonymous ? (
+            <span className="font-bold text-text italic">Anonymous Scholar</span>
+          ) : (
+            <span>Posted by {post.users?.display_name || 'Unknown'}</span>
+          )}
           <span>•</span>
           <span className="px-2 py-0.5 rounded-full bg-gray-100 text-gray-700 text-[10px] uppercase font-bold tracking-wider">
             {post.type}
