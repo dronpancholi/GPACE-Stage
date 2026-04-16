@@ -5,10 +5,6 @@ import { submitReport } from "@/app/actions/admin";
 import { FormSubmitButton } from "./FormSubmitButton";
 
 export function PostCard({ post }: { post: any }) {
-  const handleReport = async (formData: FormData) => {
-    await submitReport(formData);
-  };
-
   return (
     <article className="card p-4 hover:shadow-md transition-shadow group flex gap-4 my-4">
       {/* Vote Sidebar */}
@@ -72,7 +68,7 @@ export function PostCard({ post }: { post: any }) {
             <span>Comments</span>
           </Link>
 
-          <form action={handleReport} className="flex-1 flex items-center gap-2">
+          <form action={submitReport} className="flex-1 flex items-center gap-2">
              <input type="hidden" name="post_id" value={post.id} />
              <input type="hidden" name="reason" value="Community Flag" />
              <FormSubmitButton className="flex items-center gap-1.5 hover:text-red-600 px-2 py-1.5 rounded transition-colors" pendingText="...">
