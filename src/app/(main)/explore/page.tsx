@@ -2,6 +2,8 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { Users, Shield, PlusCircle } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function ExplorePage() {
   const supabase = await createClient();
 
