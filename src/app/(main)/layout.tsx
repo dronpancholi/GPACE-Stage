@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Home, Compass, Trophy, LogOut, Settings, User as UserIcon, AlertTriangle } from "lucide-react";
 import { signOut } from "@/app/actions/auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function MainLayout({
   children,
 }: {
@@ -80,7 +82,12 @@ export default async function MainLayout({
   } catch (error: any) {
     // If the error is a Next.js redirect or notFound, we must re-throw it 
     // so Next.js can handle the navigation logic.
-    if (error?.digest?.startsWith('NEXT_REDIRECT') || error?.digest?.startsWith('NEXT_NOT_FOUND')) {
+    if (
+      error?.digest?.startsWith('NEXT_REDIRECT') || 
+      error?.digest?.startsWith('NEXT_NOT_FOUND') ||
+      error?.message?.includes('Dynamic server usage') ||
+      error?.digest === 'DYNAMIC_SERVER_USAGE'
+    ) {
       throw error;
     }
 
