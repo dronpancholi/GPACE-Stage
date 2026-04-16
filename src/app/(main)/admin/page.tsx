@@ -158,7 +158,12 @@ async function ModerationTab({ supabase }: { supabase: any }) {
             <div key={post.id} className="card p-5 bg-white border-2 border-black">
               <div className="flex justify-between items-start gap-4 mb-4">
                 <div>
-                  <p className="text-[10px] font-black uppercase text-primary-600 mb-1">s/{post.subgroups?.name}</p>
+                  <div className="flex items-center gap-2 mb-1">
+                    <p className="text-[10px] font-black uppercase text-primary-600">s/{post.subgroups?.name}</p>
+                    {post.is_anonymous && (
+                      <span className="text-[10px] bg-gray-900 text-white px-1.5 py-0.5 font-black uppercase tracking-tighter">🕵️ Anonymous</span>
+                    )}
+                  </div>
                   <h3 className="font-bold text-lg leading-tight">{post.title}</h3>
                   <p className="text-xs text-text-muted">By {post.users?.display_name} • {new Date(post.created_at).toLocaleDateString()}</p>
                 </div>
