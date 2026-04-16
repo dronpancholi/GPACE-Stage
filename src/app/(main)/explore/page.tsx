@@ -37,7 +37,7 @@ export default async function ExplorePage() {
                  <Link href={`/s/${sub.slug}`} className="text-xl font-black font-serif text-text uppercase tracking-tight group-hover:underline decoration-2 underline-offset-4">
                     s/{sub.slug}
                  </Link>
-                 {sub.type === 'restricted' && <Shield className="w-5 h-5 text-yellow-600" title="Restricted" />}
+                 {sub.type === 'restricted' && <span title="Restricted"><Shield className="w-5 h-5 text-yellow-600" /></span>}
               </div>
               <p className="text-sm text-text-muted mb-6 font-medium leading-relaxed font-sans">{sub.description || 'No description provided.'}</p>
             </div>
