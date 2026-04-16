@@ -212,7 +212,7 @@ async function ReportsTab({ supabase }: { supabase: any }) {
                  <span>Target: <b>{report.posts?.title || 'Comment'}</b></span>
                </div>
 
-               <form action={resolveReport} className="flex gap-2">
+               <form action={async (f) => { await resolveReport(f); }} className="flex gap-2">
                  <input type="hidden" name="report_id" value={report.id} />
                  <FormSubmitButton name="status" value="resolved" className="btn-primary text-xs" pendingText="...">
                    Mark Resolved
@@ -264,7 +264,7 @@ async function UsersTab({ supabase }: { supabase: any }) {
                 </td>
                 <td className="p-3 text-right">
                    <div className="flex justify-end gap-2">
-                     <form action={updateUserRole}>
+                     <form action={async (f) => { await updateUserRole(f); }}>
                        <input type="hidden" name="user_id" value={u.id} />
                        <select name="role" onChange={(e) => e.target.form?.requestSubmit()} className="text-[10px] border border-black font-bold p-1">
                           <option value="user" selected={u.role === 'user'}>USER</option>
@@ -272,7 +272,7 @@ async function UsersTab({ supabase }: { supabase: any }) {
                           <option value="admin" selected={u.role === 'admin'}>ADMIN</option>
                        </select>
                      </form>
-                     <form action={toggleUserBan}>
+                     <form action={async (f) => { await toggleUserBan(f); }}>
                         <input type="hidden" name="user_id" value={u.id} />
                         <input type="hidden" name="is_banned" value={String(u.is_banned)} />
                         <FormSubmitButton className={`text-[10px] font-black p-1 border border-black ${u.is_banned ? 'bg-black text-white' : 'bg-white text-black'}`} pendingText="...">
