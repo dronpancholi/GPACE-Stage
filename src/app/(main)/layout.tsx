@@ -22,7 +22,25 @@ export default async function MainLayout({
 
     // Fetch navigation data safely
     const { data: subgroups } = await supabase.from("subgroups").select("id, name, slug").order('name');
-    const { data: profile } = await supabase.from("users").select("display_name, reputation").eq('id', user.id).maybeSingle();
+    const { data: profile } = await supabase.from("users").select("display_name, reputation, is_banned, ban_reason").eq('id', user.id).maybeSingle();
+
+    if (profile?.is_banned) {
+      return (
+        <div className="min-h-screen bg-white flex items-center justify-center p-8">
+           <div className="max-w-md w-full card p-8 border-4 border-red-600 shadow-[8px_8px_0_0_#dc2626] text-center">
+              <h1 className="text-3xl font-black font-serif text-red-600 mb-4 uppercase">Access Suspended</h1>
+              <p className="text-sm font-bold text-text mb-6">Your academic record has been flagged for a serious violation of GPACE Stage guidelines.</p>
+              <div className="bg-red-50 p-4 border-2 border-red-600 text-xs font-black text-red-900 mb-6 italic">
+                 REASON: {profile.ban_reason || "Policy Violation"}
+              </div>
+              <p className="text-xs text-text-muted mb-8 italic">If you believe this is an error, please contact the Office of Administrative Appeals.</p>
+              <form action="/login" method="GET">
+                <button type="submit" className="btn-primary w-full bg-red-600 border-red-950">RETURN TO LOGIN</button>
+              </form>
+           </div>
+        </div>
+      );
+    }
     const { data: topScholars } = await supabase.from("users").select("id, display_name, reputation").order("reputation", { ascending: false }).limit(5);
 
     return (
