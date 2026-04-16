@@ -1,3 +1,9 @@
+import { createClient } from "@/utils/supabase/server";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, ArrowUp, ArrowDown, User } from "lucide-react";
+import { revalidatePath } from "next/cache";
+import { castVote } from "@/app/actions/votes";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
 
 export default async function PostDetailPage({
