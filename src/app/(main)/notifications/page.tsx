@@ -42,7 +42,7 @@ export default async function NotificationsPage() {
         </div>
         
         {notifications && notifications.some(n => !n.read) && (
-          <form action={markAllRead}>
+          <form action={markAllNotificationsRead}>
              <button type="submit" className="text-[10px] font-black uppercase tracking-widest bg-black text-white px-3 py-2 hover:bg-gray-800 transition-colors">
                 Mark All Read
              </button>
