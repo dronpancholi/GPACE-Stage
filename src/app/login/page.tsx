@@ -1,4 +1,5 @@
 import { login, signup } from "@/app/actions/auth";
+import { FormSubmitButton } from "@/components/FormSubmitButton";
 
 export default async function LoginPage({
   searchParams,
