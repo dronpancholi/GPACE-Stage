@@ -230,3 +230,27 @@ SELECT id, COALESCE(raw_user_meta_data->>'display_name', split_part(email, '@', 
 FROM auth.users
 WHERE id NOT IN (SELECT id FROM public.users)
 ON CONFLICT (id) DO NOTHING;
+
+-- 5. Admin & Moderation Extensions
+CREATE TABLE IF NOT EXISTS public.reports (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  reporter_id UUID REFERENCES public.users(id) ON DELETE SET NULL,
+  post_id UUID REFERENCES public.posts(id) ON DELETE CASCADE,
+  comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE,
+  reason TEXT NOT NULL,
+  status TEXT DEFAULT 'open' NOT NULL, -- 'open', 'resolved', 'dismissed'
+  created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS is_banned BOOLEAN DEFAULT false;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS ban_reason TEXT;
+
+-- Enable RLS for reports
+ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admins can view all reports" ON public.reports;
+CREATE POLICY "Admins can view all reports" ON public.reports FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.users WHERE id = auth.uid() AND (role = 'admin' OR role = 'moderator'))
+);
+DROP POLICY IF EXISTS "Users can create reports" ON public.reports;
+CREATE POLICY "Users can create reports" ON public.reports FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+
