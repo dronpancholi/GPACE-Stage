@@ -12,8 +12,9 @@ export default async function SubmitPage({
 }) {
   const { error } = await searchParams;
   const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data: profile } = await supabase.from("users").select("allow_anonymous").eq("id", user?.id).single();
+  const { data: subgroups } = await supabase.from("subgroups").select("id, name");
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = await supabase.from("users").select("allow_anonymous").eq("id", user?.id).single();
 
     return (
     <div className="max-w-2xl mx-auto px-4 py-8">
