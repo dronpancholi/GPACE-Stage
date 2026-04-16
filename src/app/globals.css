@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+@theme {
+  /* Boxy Newspaper Aesthetic Colors */
+  --color-primary-50: #f4f4f5;
+  --color-primary-100: #e4e4e7;
+  --color-primary-500: #3f3f46;
+  --color-primary-600: #27272a;
+  --color-primary-700: #18181b;
+
+  --color-background: #fdfbf7; /* Off-white newspaper paper feel */
+  --color-surface: #ffffff;
+  --color-surface-hover: #f4f4f5;
+  --color-border: #000000;
+  --color-text: #000000;
+  --color-text-muted: #52525b;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/90 backdrop-blur-sm border-2 border-black shadow-[4px_4px_0_0_#000] transition-all;
+  }
+  .card {
+    @apply bg-surface border-2 border-black rounded-none shadow-[4px_4px_0_0_#000] transition-transform hover:-translate-y-1 hover:shadow-[6px_6px_0_0_#000];
+  }
+  .input-base {
+    @apply w-full bg-surface border-2 border-black rounded-none px-4 py-2 focus:outline-none focus:ring-0 focus:shadow-[2px_2px_0_0_#000] shadow-[1px_1px_0_0_#000] transition-all text-text font-serif placeholder:text-text-muted placeholder:font-sans;
+  }
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-black text-white font-bold font-sans tracking-wide rounded-none border-2 border-black px-5 py-2.5 transition-transform hover:-translate-y-0.5 shadow-[3px_3px_0_0_#000] focus:outline-none flex items-center justify-center;
+  }
+  .btn-secondary {
+    @apply bg-surface hover:bg-surface-hover text-text border-2 border-black font-bold font-sans tracking-wide rounded-none px-5 py-2.5 transition-transform hover:-translate-y-0.5 shadow-[3px_3px_0_0_#000] focus:outline-none flex items-center justify-center;
+  }
+  .btn-ghost {
+    @apply hover:bg-surface-hover text-text-muted hover:text-text font-bold font-sans tracking-wide rounded-none px-4 py-2 transition-colors focus:outline-none flex items-center justify-center;
+  }
+}
