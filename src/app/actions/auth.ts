@@ -30,6 +30,8 @@ export async function signup(formData: FormData) {
   const password = formData.get("password") as string;
   const displayName = formData.get("display_name") as string;
 
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
   // Sign up using Supabase Auth
   const { data: authData, error } = await supabase.auth.signUp({
     email,
@@ -38,26 +40,29 @@ export async function signup(formData: FormData) {
       data: {
         display_name: displayName,
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback`,
+      emailRedirectTo: `${SITE_URL}/api/auth/callback`,
     },
   });
 
   if (error) {
-    return redirect(`/login?message=${error.message}`);
+    return redirect(`/login?message=${encodeURIComponent(error.message)}`);
   }
 
-  // Because users table is linked by trigger or manual insert, we can manually insert the user profile
-  // or let Supabase triggers handle it. For this schema, we need to insert the display_name manually if we don't have a trigger set up.
+  // Resilient profile creation:
+  // If the MASTER_SETUP.sql triggers are active, they will handle this automatically.
+  // We use upsert here as a fallback in case triggers haven't matched yet.
   if (authData.user) {
-    const { error: profileError } = await supabase.from("users").insert([
-      { id: authData.user.id, display_name: displayName }
-    ]);
-    if (profileError) {
-      console.error("Profile creation error:", profileError);
+    try {
+      await supabase.from("users").upsert({ 
+        id: authData.user.id, 
+        display_name: displayName || email.split('@')[0] 
+      }, { onConflict: 'id' });
+    } catch (e) {
+      console.warn("Suppressible sync warning:", e);
     }
   }
 
-  return redirect("/login?message=Check email to continue sign in process");
+  return redirect("/login?message=Verification email sent. Please check your inbox (and spam).");
 }
 
 export async function signOut() {
