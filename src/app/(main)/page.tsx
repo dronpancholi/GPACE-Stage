@@ -3,6 +3,8 @@ import { PostCard } from "@/components/PostCard";
 import Link from "next/link";
 import { PenTool } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function MainFeedPage() {
   const supabase = await createClient();
 
