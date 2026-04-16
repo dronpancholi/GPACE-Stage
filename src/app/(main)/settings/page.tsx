@@ -1,3 +1,7 @@
+import { createClient } from "@/utils/supabase/server";
+import { updateProfile } from "@/app/actions/settings";
+import { redirect } from "next/navigation";
+import { Settings as SettingsIcon, AlertCircle, CheckCircle2 } from "lucide-react";
 import { FormSubmitButton } from "@/components/FormSubmitButton";
 
 export default async function SettingsPage({
